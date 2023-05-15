@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import "./App.css";
-import GatewaysPage from "./pages/GatewaysPage";
+import GatewaysPage from "./pages/GatewaysPage/GatewaysPage";
 
 const StyledHomePage = styled.div({
   textAlign: "center",

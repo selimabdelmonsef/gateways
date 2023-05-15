@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import GatewaysTable from "../components/core/GatewaysTable/GatewaysTable";
-import { GATEWAYS } from "../constants/gateways.constants";
+import GatewaysTable from "../../components/core/GatewaysTable/GatewaysTable";
+import { GATEWAYS } from "../../constants/gateways.constants";
 import styled from "styled-components";
+import AddEditGateways from "./AddEditGateways/AddEditGateways";
 
 const StyledDevices = styled.div({
   display: "flex",
@@ -22,7 +23,9 @@ const StyledAddDeviceButton = styled.button({
 
 export default function GatewaysPage() {
   const [rows, setRows] = useState([]);
-  const [getways, setGetways] = useState(GATEWAYS);
+  const [gateways, setGateways] = useState(GATEWAYS);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [addNewDeviceIndex, setAddNewDeviceIndex] = useState();
 
   const columns = [
     { id: "serialNumber", label: "Serial Number", minWidth: 170 },
@@ -37,10 +40,14 @@ export default function GatewaysPage() {
       label: "Devices",
       minWidth: 170,
     },
+    {
+      id: "actionButtons",
+      label: "",
+    },
   ];
 
   const removeDevice = (selectedDevice) => {
-    const updatedGateways = getways.map((gateway) => {
+    const updatedGateways = gateways.map((gateway) => {
       if (gateway.devices.some((d) => d.uid === selectedDevice.uid)) {
         const updatedDevices = gateway.devices.filter(
           (d) => d.uid !== selectedDevice.uid
@@ -53,22 +60,28 @@ export default function GatewaysPage() {
         return gateway;
       }
     });
-    setGetways(updatedGateways);
+    setGateways(updatedGateways);
+  };
+
+  const onAddNewDevice = (rowIndex) => {
+    setAddNewDeviceIndex(rowIndex);
+    setOpenDialog(true);
   };
 
   useEffect(() => {
     setRows(
-      getways.map((gateway, index) => {
+      gateways.map((gateway, index) => {
         return {
           serialNumber: gateway.serialNumber,
           name: String(gateway.name),
           ipAddress: gateway.ipv4Address,
+
           devices:
             gateway?.devices.length > 0 ? (
               gateway?.devices?.map((device, index) => {
                 return (
-                  <StyledDevices key={device?.uid}>
-                    <div>{device?.uid}</div>
+                  <StyledDevices key={index}>
+                    <div>{device?.name}</div>
                     <StyledRemoveButton onClick={() => removeDevice(device)}>
                       &#x2715;
                     </StyledRemoveButton>
@@ -78,20 +91,30 @@ export default function GatewaysPage() {
             ) : (
               <div>No Devices</div>
             ),
+          actionButtons: [
+            <StyledAddDeviceButton
+              key={index}
+              onClick={() => onAddNewDevice(index)}
+            >
+              Add Device
+            </StyledAddDeviceButton>,
+          ],
         };
       })
     );
-  }, [getways]);
+  }, [gateways, openDialog]);
 
   return (
     <div>
-      <GatewaysTable
-        rows={rows}
-        columns={columns}
-        actionButtons={[
-          <StyledAddDeviceButton>Add Device</StyledAddDeviceButton>,
-        ]}
-      ></GatewaysTable>
+      <GatewaysTable rows={rows} columns={columns}></GatewaysTable>
+
+      <AddEditGateways
+        rowIndex={addNewDeviceIndex}
+        gatewaysData={gateways}
+        addedDeviceData={(data) => setGateways(data)}
+        openDialog={openDialog}
+        onClose={() => setOpenDialog(false)}
+      />
     </div>
   );
 }

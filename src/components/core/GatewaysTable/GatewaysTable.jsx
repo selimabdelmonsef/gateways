@@ -9,7 +9,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import "./GatewaysTable.css";
 
-export default function GatewaysTable({ rows, columns, actionButtons }) {
+export default function GatewaysTable({ rows, columns }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -21,7 +21,6 @@ export default function GatewaysTable({ rows, columns, actionButtons }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   return (
     <Paper
       className="gateways-table-container"
@@ -54,11 +53,6 @@ export default function GatewaysTable({ rows, columns, actionButtons }) {
                       </TableCell>
                     );
                   })}
-                  {actionButtons.map((element) => (
-                    <TableCell key={index} align="right">
-                      {element}
-                    </TableCell>
-                  ))}
                 </TableRow>
               );
             })}
