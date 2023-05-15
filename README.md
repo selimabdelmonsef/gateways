@@ -1,5 +1,5 @@
 Project Title
-just briefly getting the gateways through a fake json which we can say its our api, using material UI tables, new feature for removing devices, adding devices.
+just briefly getting the gateways through a fake json which we can say its our api, using material UI tables, new feature for removing devices, adding new devices.
 
 Installation
 Clone the repository: git clone https://github.com/selimabdelmonsef/gateways
